@@ -57,49 +57,49 @@ gearlist [string, slot] GearList_Array()
 
 ////////////////////////////////
 //Existance
-	boolean GearListName_Exists(string grsname)
+	boolean GearListName_Exists(string grlname)
 	{
-		if(GearList_Array() contains grsname)
+		if(GearList_Array() contains grlname)
 		{
-			print_html("Existence Check: GearList Name %s exists.",grsname, beefy_logging());
+			print_html("Existence Check: GearList Name %s exists.",grlname, beefy_logging());
 			return true;
 		}
 		else
 		{
-			print_html("Existence Check: GearList Name %s not found.", grsname, beefy_logging());
+			print_html("Existence Check: GearList Name %s not found.", grlname, beefy_logging());
 			return false;
 		}
 		return false;
 	}
-	boolean GearListSlot_Exists(string grsname, slot slt)
+	boolean GearListSlot_Exists(string grlname, slot slt)
 	{
-		if(GearListName_Exists(grsname))
+		if(GearListName_Exists(grlname))
 		{
-			if(GearList_Array()[grsname] contains slt)
+			if(GearList_Array()[grlname] contains slt)
 			{
-				print_html("Existence Check: GearList Name %s and slot %s exists.",string[int]{grsname,slt},beefy_logging());
+				print_html("Existence Check: GearList Name %s and slot %s exists.",string[int]{grlname,slt},beefy_logging());
 				return true;
 			}
 			else
 			{
-				print_html("Existence Check: GearList Name %s exists, but not for slot %s", string[int]{grsname,slt},beefy_logging());
+				print_html("Existence Check: GearList Name %s exists, but not for slot %s", string[int]{grlname,slt},beefy_logging());
 				return false;
 			}
 		}
 		return false;
 	}
-	boolean GearListSlotWeight_Exists(string grsname, slot slt, int weight)
+	boolean GearListSlotWeight_Exists(string grlname, slot slt, int weight)
 	{
-		if(GearListSlot_Exists(grsname,slt))
+		if(GearListSlot_Exists(grlname,slt))
 		{
-			if(GearList_Array()[grsname,slt].list contains weight)
+			if(GearList_Array()[grlname,slt].list contains weight)
 			{
-				print_html("Existence Check: GearList Name %s for slot %s with weight %s exists.",string[int]{grsname,slt,weight.to_string()},beefy_logging());
+				print_html("Existence Check: GearList Name %s for slot %s with weight %s exists.",string[int]{grlname,slt,weight.to_string()},beefy_logging());
 				return true;
 			}
 			else
 			{
-				print_html("Existence Check: GearList Name %s for slot %s exists, but not for weight %s", string[int]{grsname,slt,weight.to_string()},beefy_logging());
+				print_html("Existence Check: GearList Name %s for slot %s exists, but not for weight %s", string[int]{grlname,slt,weight.to_string()},beefy_logging());
 				return false;
 			}
 		}
@@ -116,112 +116,112 @@ gearlist [string, slot] GearList_Array()
 		{
 			index_array[index_array.count()] = weight;
 		}
-		index_array sort by -value;
+		sort index_array by -value;
 		gl.sortindex = index_array;
 	}
 
 //Delete Record Functions
-	boolean Delete_GearListName(string grsname)
+	boolean Delete_GearListName(string grlname)
 	{
-		if(GearListName_Exists(grsname))
+		if(GearListName_Exists(grlname))
 		{
-			foreach slt in GearList_Array()[grsname]
+			foreach slt in GearList_Array()[grlname]
 			{
-				print_html("Gear Name Slot Deletion: Name: %s, slot: %s", string [int]{grsname,slt},beefy_logging());
+				print_html("Gear Name Slot Deletion: Name: %s, slot: %s", string [int]{grlname,slt},beefy_logging());
 			}
-			remove gearlist_array[grsname];
+			remove gearlist_array[grlname];
 			SaveGearLists();
-			print_html("Gear Name Deleted: Name: %s", grsname, beefy_logging());
+			print_html("Gear Name Deleted: Name: %s", grlname, beefy_logging());
 			return true;
 		}
 		return false;
 	}
-	boolean Delete_GearListSlot(string grsname, slot slt)
+	boolean Delete_GearListSlot(string grlname, slot slt)
 	{
-		if(GearListSlot_Exists(grsname, slt))
+		if(GearListSlot_Exists(grlname, slt))
 		{
-			remove gearlist_array[grsname,slt];
+			remove gearlist_array[grlname,slt];
 			SaveGearLists();
-		print_html("GearList Name Deletion: Name: %s, slot: %s", string [int]{grsname,slt},beefy_logging());
+		print_html("GearList Name Deletion: Name: %s, slot: %s", string [int]{grlname,slt},beefy_logging());
 			return true;
 		}
 		return false;
 	}
-	boolean Delete_GearListSlot(string grsname, string sltname)
+	boolean Delete_GearListSlot(string grlname, string sltname)
 	{
-		return Delete_GearListSlot(grsname,sltname.to_slot());
+		return Delete_GearListSlot(grlname,sltname.to_slot());
 	}
 
-	boolean Delete_GearListSlotWeight(string grsname, slot slt, int weight)
+	boolean Delete_GearListSlotWeight(string grlname, slot slt, int weight)
 	{
-		if(GearListSlot_Exists(grsname, slt))
+		if(GearListSlot_Exists(grlname, slt))
 		{
-			if(GearList_Array[grsname,slt].list contains weight)
+			if(GearList_Array[grlname,slt].list contains weight)
 			{
-				print_html("GearList Remove all Items of weight %s from List %s slot %s", string [int]{weight.to_string(),grsname,slt.to_string()});
-				remove gearlist_array[grsname,slt].list[weight];
-				Build_GL_Index(gearlist_array[grsname,slt]);
+				print_html("GearList Remove all Items of weight %s from List %s slot %s", string [int]{weight.to_string(),grlname,slt.to_string()});
+				remove gearlist_array[grlname,slt].list[weight];
+				Build_GL_Index(gearlist_array[grlname,slt]);
 				SaveGearLists();
 				return true;
 			}
 			else
 			{
-				print_html("GearList Remove Error Items of weight %s not in List %s slot %s", string [int]{weight.to_string(),grsname,slt.to_string()});
+				print_html("GearList Remove Error Items of weight %s not in List %s slot %s", string [int]{weight.to_string(),grlname,slt.to_string()});
 			}
 		}
 		return false;
 	}
 
-	boolean Delete_GearListSlotWeightItem(string grsname, slot slt, int weight, item it)
+	boolean Delete_GearListSlotWeightItem(string grlname, slot slt, int weight, item it)
 	{
-		if(GearListSlotWeight_Exists(grsname, slt, weight))
+		if(GearListSlotWeight_Exists(grlname, slt, weight))
 		{
-			if(GearList_Array[grsname,slt].list[weight] contains it)
+			if(GearList_Array[grlname,slt].list[weight] contains it)
 			{
-				print_html("GearList Remove Item %s of weight %s from List %s slot %s", string [int]{it.to_string(),weight.to_string(),grsname,slt.to_string()});
-				remove gearlist_array[grsname,slt].list[weight,it];
-				Build_GL_Index(gearlist_array[grsname,slt]);
+				print_html("GearList Remove Item %s of weight %s from List %s slot %s", string [int]{it.to_string(),weight.to_string(),grlname,slt.to_string()});
+				remove gearlist_array[grlname,slt].list[weight,it];
+				Build_GL_Index(gearlist_array[grlname,slt]);
 				SaveGearLists();
 				return true;
 			}
 			else
 			{
-				print_html("GearList Remove Error Item %s not in List %s slot %s with weight %s", string [int]{it.to_string(),grsname,slt.to_string(), weight.to_string()});
+				print_html("GearList Remove Error Item %s not in List %s slot %s with weight %s", string [int]{it.to_string(),grlname,slt.to_string(), weight.to_string()});
 			}
 				
 		}
 
 		return false;
 	}
-	boolean Delete_GearListSlotItem(string grsname, string sltname, string itname)
+	boolean Delete_GearListSlotItem(string grlname, string sltname, string itname)
 	{
-		return Delete_GearListSlotItem(grsname, sltname.to_slot(), itname.to_item());
+		return Delete_GearListSlotItem(grlname, sltname.to_slot(), itname.to_item());
 	}
 
-	boolean Delete_GearListSlotItem(string grsname, slot slt, item it)
+	boolean Delete_GearListSlotItem(string grlname, slot slt, item it)
 	{
 		boolean nodelete = true;
-		if(GearListSlot_Exists(grsname, slt))
+		if(GearListSlot_Exists(grlname, slt))
 		{
-			foreach weight in GearList_Array()[grsname,slt].list
+			foreach weight in GearList_Array()[grlname,slt].list
 			{
-				if(GearList_Array()[grsname,slt].list[weight] contains it)
+				if(GearList_Array()[grlname,slt].list[weight] contains it)
 				{
-					Delete_GearListSlotWeightItem(grsname, slt, weight, it);
+					Delete_GearListSlotWeightItem(grlname, slt, weight, it);
 					nodelete = false;
 				}
 			}
 			if(nodelete)
 			{
-				print_html("GearList Remove Error Item %s not in List %s slot %s", string [int]{it.to_string(),grsname,slt.to_string()});
+				print_html("GearList Remove Error Item %s not in List %s slot %s", string [int]{it.to_string(),grlname,slt.to_string()});
 			}
 
 		}
 		return false;
 	}
-	boolean Delete_GearListSlotItem(string grsname, string sltname, string itname)
+	boolean Delete_GearListSlotItem(string grlname, string sltname, string itname)
 	{
-		return Delete_GearListSlotItem(grsname, sltname.to_slot(), itname.to_item());
+		return Delete_GearListSlotItem(grlname, sltname.to_slot(), itname.to_item());
 	}
 
 ///////////////////////
@@ -271,18 +271,29 @@ gearlist [string, slot] GearList_Array()
 
 ///////////////////////
 //Set/Add Gearslot
-	void AddGearToList(string grlname, slot slt, item it, int weight)
+	void AddGearToList(string grlname, slot slt, int weight, item it)
 	{
 		if(GearListSlot_Exists(grlname,slt))
 		{
-			if(GearList_Array()[grlname,slt].list contains it)
+			if(GearList_Array()[grlname,slt].list contains weight)
 			{
-				print_html("GearList %s, slot %s, adding %s with weight %s", string[int]{grlname, slt.to_string(), it.to_string(), weight.to_string()});
-				GearList_Array()[grlname,slt].list[weight,it] = true;
+				if(GearList_Array()[grlname,slt].list[weight] contains it)
+				{
+					print_html("GearList %s, slot %s, adding %s with weight %s", string[int]{grlname, slt.to_string(), it.to_string(), weight.to_string()});
+					GearList_Array()[grlname,slt].list[weight,it] = true;
+					SaveGearLists();
+				}
+				else
+				{
+					print_html("GearList %s, slot %s, weight %s, already has %s", string[int]{grlname, slt.to_string(), weight.to_string(),it.to_string()});
+				}
 			}
 			else
 			{
-				print_html("GearList %s, slot %s, weight %s, already has %s", string[int]{grlname, slt.to_string(), weight.to_string(),it.to_string()});
+				print_html("GearList %s, slot %s, adding %s with new weight %s", string[int]{grlname, slt.to_string(), it.to_string(), weight.to_string()});
+				GearList_Array()[grlname,slt].list[weight,it] = true;
+				Build_GL_Index(gearlist_array[grlname,slt]);
+				SaveGearLists();
 			}
 		}
 		else
@@ -311,6 +322,7 @@ gearlist [string, slot] GearList_Array()
 			{
 				print_html("%s weight %s", string [int] {it.to_string(), weight});
 			}
+			Build_GL_Index(gearlist_array[grlname,slt]);
 			SaveGearLists();
 		}
 		else if(! GearListSlotWeight_Exists(grlname,slt,weight))
@@ -319,6 +331,7 @@ gearlist [string, slot] GearList_Array()
 			GearList_Array()[grlname,slt].name = grlname;
 			GearList_Array()[grlname,slt].list[weight] = its; = its;
 			GearList_Array()[grlname,slt].myslot = slt;
+			Build_GL_Index(gearlist_array[grlname,slt]);
 			SaveGearLists();
 			print_html("Setting new Gear List %s for slot %s", string[int]{grlname, slt.to_string()});
 			print("New List...");
