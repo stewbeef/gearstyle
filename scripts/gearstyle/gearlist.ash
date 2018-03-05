@@ -193,9 +193,13 @@ gearlist [string, slot] GearList_Array()
 
 		return false;
 	}
-	boolean Delete_GearListSlotItem(string grlname, string sltname, string itname)
+	boolean Delete_GearListSlotWeightItem(string grlname, string sltname, int weight, item it)
 	{
-		return Delete_GearListSlotItem(grlname, sltname.to_slot(), itname.to_item());
+		return Delete_GearListSlotWeightItem(grlname, sltname.to_slot(), weight, it);
+	}
+	boolean Delete_GearListSlotWeightItem(string grlname, string sltname, int weight, string itname)
+	{
+		return Delete_GearListSlotWeightItem(grlname, sltname.to_slot(), weight, itname.to_item());
 	}
 
 	boolean Delete_GearListSlotItem(string grlname, slot slt, item it)
