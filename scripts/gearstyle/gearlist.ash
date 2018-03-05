@@ -310,7 +310,7 @@ gearlist [string, slot] GearList_Array()
 		AddGearToList(grlname, sltname.to_slot(), itname.to_item(), weight.to_int());
 	}
 
-	void SetGearList(string grlname, slot slt, int weight, int [item] its, boolean overwrite)
+	void SetGearList(string grlname, slot slt, int weight, boolean [item] its, boolean overwrite)
 	{
 		if(GearListSlotWeight_Exists(grlname,slt,weight) && overwrite)
 		{
@@ -350,15 +350,15 @@ gearlist [string, slot] GearList_Array()
 			print_html("Failure: Gear List %s for slot %s with weight %s already exists, not overwriting", string[int]{grlname, slt.to_string(), weight.to_string()});
 		}
 	}
-	void SetGearList(string grlname, slot slt, int weight, int [string] itnames, boolean overwrite)
+	void SetGearList(string grlname, slot slt, int weight, boolean [string] itnames, boolean overwrite)
 	{
-		int [item] it_array;
+		boolean [item] it_array;
 		foreach name in itnames
 		{
 			item this_it = to_item(name);
 			if(AllowedSlot(slt, this_it))
 			{
-				it_array[this_it] = itnames[name];
+				it_array[this_it] = true;
 			}
 			else
 			{
@@ -367,19 +367,19 @@ gearlist [string, slot] GearList_Array()
 		}
 		SetGearList(grlname,slt,weight,it_array,overwrite);
 	}
-	void SetGearList(string grlname, slot slt, int weight, int [item] it_array)
+	void SetGearList(string grlname, slot slt, int weight, boolean [item] it_array)
 	{
 		SetGearList(grlname, slt, weight, it_array, true);
 	}
-	void SetGearList(string grlname, slot slt, int weight, int [string] itnames)
+	void SetGearList(string grlname, slot slt, int weight, boolean [string] itnames)
 	{
 		SetGearList(grlname, slt, weight, itnames, true);
 	}
-	void SetGearList(string grlname, string sltname, int weight, int [string] itnames, boolean overwrite)
+	void SetGearList(string grlname, string sltname, int weight, boolean [string] itnames, boolean overwrite)
 	{
 		SetGearList(grlname, sltname.to_slot(), weight, itnames, overwrite);
 	}
-	void SetGearList(string grlname, string sltname, int weight, int [string] itnames)
+	void SetGearList(string grlname, string sltname, int weight, boolean [string] itnames)
 	{
 		SetGearList(grlname, sltname.to_slot(), weight, itnames, true);
 	}
