@@ -105,13 +105,68 @@ gearlist [string, slot] GearList_Array()
 		}
 		return false;
 	}
+////////////////////////////////
+//Print Records
+	void print_gearlist(gearlist gl)
+	{
+		string [int] output_array;
+		output_array[0] = gl.name;
+		output_array[1] = gl.myslot.to_string();
+		print_html("Gearlist %s for slot %s",output_array);
+		foreach weight in gl.list
+		{
+			print_html_list("Items for Weight %s: %s",weight.to_string(),gl.list[weight].BooleanItemToStringArray());
+		}
+		//BooleanItemToStringArray
+	}
+	void print_gearlist(string glname, slot slt)
+	{
+		if(GearListSlot_Exists(glname,slt))
+		{
+			print_gearlist(GearList_Array()[glname,slt]);
+		}
+			else
+		{
+			string [int] output_array;
+			output_array[0] = glname;
+			output_array[1] = slt.to_string();
+			print_html("Gearlist Printing Error, %s for slot %s not found", output_array);
+		}
+	}
+	void print_gearlist(string glname, string sltname)
+	{
+		print_gearlist(glname,sltname.to_slot());
+	}
 
+	void print_gearlist(string glname)
+	{
+		if(GearListName_Exists(glname))
+		{
+			print_html("Gearlist %s entries", glname);
+			foreach slt in GearList_Array()[glname]
+			{
+				print_gearlist(GearList_Array()[glname,slt]);
+			}
+			
+		}
+		else
+		{
+			print_html("Gearlist Printing Error, %s not found", glname);
+		}
+	}
+	void print_gearlist_all()
+	{
+		foreach name in GearList_Array()
+		{
+			print_gearlist(name);
+			print("");
+		}
+	}
 ////////////////////////////////
 //Helper Functions
 	void Build_GL_Index(gearlist gl)
 	{
 		int [int] index_array;
-		int index = 0;
 		foreach weight in gl.list
 		{
 			index_array[index_array.count()] = weight;
@@ -127,7 +182,8 @@ gearlist [string, slot] GearList_Array()
 		{
 			foreach slt in GearList_Array()[grlname]
 			{
-				print_html("Gear Name Slot Deletion: Name: %s, slot: %s", string [int]{grlname,slt},beefy_logging());
+				print_html("Gear List Deleted");
+				print_gearlist(grlname);
 			}
 			remove gearlist_array[grlname];
 			SaveGearLists();
@@ -142,7 +198,8 @@ gearlist [string, slot] GearList_Array()
 		{
 			remove gearlist_array[grlname,slt];
 			SaveGearLists();
-		print_html("GearList Name Deletion: Name: %s, slot: %s", string [int]{grlname,slt},beefy_logging());
+			print_html("Gear List Slot deleted:");
+			print_gearlist(grlname,slt);
 			return true;
 		}
 		return false;
@@ -170,6 +227,10 @@ gearlist [string, slot] GearList_Array()
 			}
 		}
 		return false;
+	}
+	boolean Delete_GearListSlotWeight(string grlname, string sltname, int weight)
+	{
+		return Delete_GearListSlotWeight(grlname, sltname.to_slot(), weight);
 	}
 
 	boolean Delete_GearListSlotWeightItem(string grlname, slot slt, int weight, item it)
@@ -316,34 +377,31 @@ gearlist [string, slot] GearList_Array()
 		{
 			print_html("Setting Gear List, replacing existing list %s for slot %s", string[int]{grlname, slt.to_string()});
 			print("Old List...");
-			foreach it in GearList_Array()[grlname,slt].list[weight]
-			{
-				print_html("%s weight %s", string [int] {it.to_string(), weight});
-			}
+			print_gearlist(grlname,slt);
 			GearList_Array()[grlname,slt].list[weight] = its;
 			print("New List...");
-			foreach it in GearList_Array()[grlname,slt].list[weight]
-			{
-				print_html("%s weight %s", string [int] {it.to_string(), weight});
-			}
+			print_gearlist(grlname,slt);
 			Build_GL_Index(gearlist_array[grlname,slt]);
 			SaveGearLists();
 		}
-		else if(! GearListSlotWeight_Exists(grlname,slt,weight))
+		else if(GearListSlot_Exists(grlname,slt) && !GearListSlotWeight_Exists(grlname,slt,weight))
+		{
+			GearList_Array()[grlname,slt].list[weight] = its;
+			Build_GL_Index(gearlist_array[grlname,slt]);
+			SaveGearLists();
+			print_html("Setting new Gear List %s for slot %s with weight %s", string[int]{grlname, slt.to_string(), weight.to_string()});
+			print_gearlist(grlname,slt);
+		}
+		else if(!GearListSlot_Exists(grlname,slt))
 		{
 			GearList_Array()[grlname,slt] = new gearlist();
 			GearList_Array()[grlname,slt].name = grlname;
-			GearList_Array()[grlname,slt].list[weight] = its; = its;
+			GearList_Array()[grlname,slt].list[weight] = its;
 			GearList_Array()[grlname,slt].myslot = slt;
 			Build_GL_Index(gearlist_array[grlname,slt]);
 			SaveGearLists();
 			print_html("Setting new Gear List %s for slot %s", string[int]{grlname, slt.to_string()});
-			print("New List...");
-			foreach it in GearList_Array()[grlname,slt].list
-			{
-				int weight = GearList_Array()[grlname,slt].list[it];
-				print_html("%s weight %s", string [int] {it.to_string(), weight});
-			}
+			print_gearlist(grlname,slt);
 		}
 		else
 		{
@@ -384,68 +442,6 @@ gearlist [string, slot] GearList_Array()
 		SetGearList(grlname, sltname.to_slot(), weight, itnames, true);
 	}
 
-
-////////////////////////////////
-//Print Records
-	void print_gearlist(gearlist gl)
-	{
-		string [int] output_array;
-		output_array[0] = gl.name;
-		output_array[1] = gl.myslot.to_string();
-		print_html("Gearlist %s for slot %s : %s",output_array);
-		foreach weight in gl.list
-		{
-			print_html("Items for Weight %s");
-			foreach it in gl.list[weight]
-			{
-				print_html("%s weight %s", string[int]{it.to_string(), gl.list[it].to_string()});
-			}
-		}
-		//BooleanItemToStringArray
-	}
-	void print_gearlist(string glname, slot slt)
-	{
-		if(GearListSlot_Exists(glname,slt))
-		{
-			print_gearlist(GearList_Array()[glname,slt]);
-		}
-			else
-		{
-			string [int] output_array;
-			output_array[0] = glname;
-			output_array[1] = slt.to_string();
-			print_html("Gearlist Printing Error, %s for slot %s not found", output_array);
-		}
-	}
-	void print_gearlist(string glname, string sltname)
-	{
-		print_gearlist(glname,sltname.to_slot());
-	}
-
-	void print_gearlist(string glname)
-	{
-		if(GearListName_Exists(glname))
-		{
-			print_html("Gearlist %s entries", glname);
-			foreach slt in GearList_Array()[glname]
-			{
-				print_gearlist(GearList_Array()[glname,slt]);
-			}
-			
-		}
-		else
-		{
-			print_html("Gearlist Printing Error, %s not found", glname);
-		}
-	}
-	void print_gearlist_all()
-	{
-		foreach name in GearList_Array()
-		{
-			print_gearlist(name);
-			print("");
-		}
-	}
 ////////////////////////////////
 //Command Parsing
 void Parse_Gear_Command(string command)
@@ -454,6 +450,7 @@ void Parse_Gear_Command(string command)
 	slot gslot;
 	item it;
 	int paramnum = command_array.count();
+	string [int] subarray;
 	switch(command_array[0])
 	{
 	//Gear List Commands
@@ -515,8 +512,8 @@ void Parse_Gear_Command(string command)
 				break;
 			}
 		break;
-		case "print gearlist":
-		case "print gl":
+		case "list":
+		case "print":
 			switch(paramnum)
 			{
 				case 1:
